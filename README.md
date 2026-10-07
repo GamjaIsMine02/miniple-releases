@@ -2,7 +2,7 @@
 
 기존 Chrome YouTube Music 앱/PWA 또는 탭을 조작하는 경량 macOS 미니 플레이어입니다. 음악은 기존 YouTube Music에서 재생합니다. MINIPLE에는 Chrome 확장이나 Chromium 런타임을 설치하지 않습니다. 기존 Chrome의 로그인 상태를 사용합니다.
 
-현재 배포는 `0.4.1-dev.1`입니다. v1은 제품 방식의 이름이며 정식 1.0 출시를 뜻하지 않습니다. 이전 독립형 `0.1.0-dev.1` 배포를 대체합니다. 소스 저장소의 공개 범위는 변경하지 않습니다.
+현재 배포는 `0.4.2-dev.1`입니다. 세 단계 연결 안내와 버튼 지연 개선을 포함합니다. v1은 제품 방식의 이름이며 정식 1.0 출시를 뜻하지 않습니다. 소스 저장소의 공개 범위는 변경하지 않습니다.
 
 ## 설치
 
@@ -31,7 +31,9 @@ brew install --cask --appdir="$HOME/Applications" GamjaIsMine02/tap/miniple
 
 권한과 Chrome 설정은 사용자 승인이 필요합니다. 앱이나 Homebrew가 대신 켜지 않습니다. macOS 자동화 권한과 Chrome JavaScript 허용은 Chrome 단위이며 YouTube Music 전용 권한이 아닙니다. 앱 코드는 YouTube Music URL과 정확한 origin을 확인한 뒤 읽기와 명령을 실행합니다. [Chrome 공식 안내](https://www.chromium.org/developers/applescript/)
 
-한 번 연결되면 이후 실행에서는 안내를 생략하고 자동 연결을 시도합니다. 재설치·빌드 변경으로 macOS가 권한을 다시 요청할 수 있습니다. 문제가 있으면 플레이어 `… → YouTube Music 연결 → 연결하기`에서 안내를 다시 여세요. 권한을 거부했다면 `시스템 설정 → 개인정보 보호 및 보안 → 자동화`에서 MINIPLE의 Google Chrome 항목을 확인하세요.
+한 번 연결되면 이후 실행에서는 안내를 생략하고 자동 연결을 시도합니다. 재설치·빌드 변경으로 macOS가 권한을 다시 요청할 수 있습니다. 문제가 있으면 플레이어 `… → YouTube Music 연결`에서 안내를 다시 여세요. 하위 메뉴 없이 바로 연결 창이 열립니다. 권한을 거부했다면 `시스템 설정 → 개인정보 보호 및 보안 → 자동화`에서 MINIPLE의 Google Chrome 항목을 확인하세요.
+
+연결 창은 하늘색·둥근 패널에 시스템 권한 요청, JavaScript 허용 안내, 연결 확인을 순서대로 표시합니다. 링크 복사·외부 문서 열기 버튼은 없습니다. 플레이어 메뉴는 단축키 변경, 투명도 조절, 연결, YouTube Music 열기, 종료만 표시합니다.
 
 ## 사용과 제한
 
@@ -41,7 +43,9 @@ brew install --cask --appdir="$HOME/Applications" GamjaIsMine02/tap/miniple
 
 YouTube Music DOM을 사용하며 공식 제어 API는 아닙니다. 페이지 구조가 바뀌면 기능이 깨질 수 있습니다. Safari 웹 앱은 대상이 아닙니다. Google 또는 YouTube의 공식 앱이 아닙니다. 비밀번호·쿠키·로그인 프로필·개인 토큰은 앱 ZIP에 포함하지 않습니다.
 
-개발용 검사에서 단위 테스트 23개, 생성된 AppleScript 컴파일, 모의 DOM의 읽기·재생 토글·origin 제한, 최초 안내 정책과 앱 서명·구성 검사가 통과했습니다. 사용자는 기존 로컬 AppleScript 앱이 작동한다고 보고했습니다. 이를 배포 앱의 실제 재생 검증이나 다른 Mac 검증으로 기록하지 않습니다. 서명 무결성과 macOS 실행 승인은 별개의 검사입니다.
+개발용 검사에서 단위 테스트 23개, 생성된 AppleScript 컴파일, 모의 DOM의 빠른 읽기·전체 목록 읽기·비동기 상태 관찰·origin 제한, 최초 안내 정책·렌더링·메뉴와 앱 서명·구성 검사가 통과했습니다. 실행 파일 최소 대상도 Cask와 같은 macOS 13.0으로 검사합니다. 다른 Mac·계정에서의 실행은 미검증입니다. 서명 무결성과 macOS 실행 승인은 별개의 검사입니다.
+
+초기 연결만 탭 주소를 일괄 검색하고, 이후에는 연결된 창·탭 ID를 직접 사용합니다. 명령은 추가 조회보다 먼저 처리합니다. 명령 뒤 실제 상태를 짧은 간격으로 확인하며 명령을 재실행하지 않습니다. 재생목록 전체 읽기는 목록 패널을 열었을 때만 합니다. 동일 코드를 적용한 이전 로컬 수정본에서 요청부터 재생 상태 렌더링까지 두 번 각각 233ms·270ms를 측정하고 원래 상태로 복원했습니다. 모든 환경의 지연 보장과 소리 출력 지연 측정은 아닙니다.
 
 ## 업데이트와 직접 다운로드
 
@@ -54,4 +58,6 @@ brew update
 brew upgrade --cask GamjaIsMine02/tap/miniple
 ```
 
-직접 다운로드는 [개발용 Releases](https://github.com/GamjaIsMine02/miniple-releases/releases)에서 `MINIPLE-0.4.1-dev.1-arm64.zip`을 선택하세요. 각 ZIP에 SHA-256 파일을 제공합니다. GitHub의 `Source code.zip`은 앱 설치 파일이 아닙니다. 이전 독립형 앱의 로그인 프로필은 이 앱에서 사용하지 않으며 삭제하지 않습니다.
+직접 다운로드는 [개발용 Releases](https://github.com/GamjaIsMine02/miniple-releases/releases)에서 `MINIPLE-0.4.2-dev.1-arm64.zip`을 선택하세요. 각 ZIP에 SHA-256 파일을 제공합니다. GitHub의 `Source code.zip`은 앱 설치 파일이 아닙니다. 이전 독립형 앱의 로그인 프로필은 이 앱에서 사용하지 않으며 삭제하지 않습니다.
+
+앱 파일이 GitHub와 Homebrew를 통해 전달되는 구조는 [Homebrew 배포 과정](DISTRIBUTION.md)에 정리했습니다.
